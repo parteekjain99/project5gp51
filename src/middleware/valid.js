@@ -6,6 +6,11 @@ const isValidRequestBody = function(requestBody) {
     return Object.keys(requestBody).length > 0;
 }
 
+const isValidStatus = function(status) {
+    return ['pending', 'completed', 'cancelled'].indexOf(status) !== -1
+}
+
+
 
 const isValid = function(value) {
     if (typeof value === 'undefined' || value === null) return false
@@ -173,7 +178,7 @@ const creatOrder = function(req, res, next) {
         return res.status(400).send({ status: false, message: "please provide input credentials" });
     }
 
-    const { cartId, totalPrice, totalItems } = requestBody
+    const { cartId } = requestBody
 
     if (!isValid(cartId)) {
         return res.status(400).send({ status: false, message: "please provide description credentials" });
@@ -183,13 +188,8 @@ const creatOrder = function(req, res, next) {
         return res.status(400).send({ status: false, message: "please provide description credentials" });
     }
 
-    if (!/^\d{1,8}(?:\.\d{1,4})?$/.test(totalPrice)) {
-        return res.status(400).send({ status: false, message: "total price should be valid" });
-    }
 
-    if (!/^\d[1-70]?$/.test(totalItems)) {
-        return res.status(400).send({ status: false, message: "Totalitem should be valid" });
-    }
+
     next()
 }
 

@@ -10,13 +10,13 @@ const creatOrder = async(req, res) => {
         const requestBody = req.body;
         const userIdFromToken = req.userId;
 
-        const { cartId, cancellable, status } = requestBody;
+        const { cartId, status,cancellable } = requestBody;
 
         const searchUser = await userModel.findOne({ _id: userId });
         if (!searchUser) {
             return res.status(400).send({ status: false, message: `user doesn't exists for ${userId}` });
         }
-        // //Authentication & authorization
+        //Authentication & authorization
         if (searchUser._id.toString() != userIdFromToken) {
             return res.status(401).send({ status: false, message: `Unauthorized access! User's info doesn't match` });
 
@@ -25,8 +25,18 @@ const creatOrder = async(req, res) => {
 
 
         //searching cart to match the cart by userId whose is to be ordered.
-        const searchCartDetails = await cartModel.findOne({ _id: cartId, userId: userId, });
+        const searchCartDetails = await cartModel.findOne({
+            _id: cartId,
+            userId: userId,
+        });
+        if (!searchCartDetails) {
+            return res.status(400).send({
+                status: false,
+                message: `Cart doesn't belongs to ${userId}`,
+            });
+        }
 
+         console.log(searchCartDetails)
         let totalQuantity = searchCartDetails.items.map((x) => x.quantity).reduce((previousValue, currentValue) => previousValue + currentValue);
 
         //object destructuring for response body.
@@ -40,12 +50,15 @@ const creatOrder = async(req, res) => {
             status,
         };
         const savedOrder = await orderModel.create(orderDetails)
+         await cartModel.findOneAndUpdate({ _id:cartId }, {$set:{items: [], totalItems:0 , totalPrice:0}} )
         return res.status(200).send({ status: true, message: "Order placed.", data: savedOrder });
-
+       
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message });
     }
 };
+
+
 
 
 const isValidRequestBody = function(requestBody) {
