@@ -127,14 +127,14 @@ const createUser = async function(req, res) {
         if (Bstreet) {
             let validateStreet = /^[a-zA-Z0-9]/
             if (!validateStreet.test(Bstreet)) {
-                return res.status(400).send({ status: false, message: "enter valid street name in shipping" })
+                return res.status(400).send({ status: false, message: "enter billing valid street name in shipping" })
             }
         }
 
         if (Bcity) {
             let validateCity = /^[a-zA-z',.\s-]{1,25}$/gm
             if (!validateCity.test(Bcity)) {
-                return res.status(400).send({ status: false, message: "enter valid city name in shipping" })
+                return res.status(400).send({ status: false, message: "enter valid billing city name in shipping" })
             }
         }
         if (Bpincode) {
@@ -178,7 +178,7 @@ const userLogin=async function (req,res){
 
   let findUser = await userModel.findOne({ email:data.email})
   console.log(findUser)
-      if (!findUser) return res.status(404).send({ status: false, message: "email or password is incorrect" })  
+      if (!findUser) return res.status(404).send({ status: false, message: "email  is incorrect" })  
       
       const passwordDecrept=await bcrypt.compare(data.password, findUser.password)
       console.log(passwordDecrept)
@@ -209,6 +209,7 @@ const getuserById = async function (req, res) {
         console.log(userIdInParams)
         let decodedToken = req.userId
         console.log(decodedToken)
+        
         if(decodedToken != userIdInParams){
 
             return res.status(403).send({status:false, message:"User Not authorized!" })

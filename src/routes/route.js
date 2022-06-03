@@ -8,7 +8,7 @@ const cartController = require("../Controller/cartController");
 const orderController = require("../Controller/orderController")
 
 // User Api
-router.post('/User', userController.createUser)
+router.post('/register', userController.createUser)
 router.post('/login', valid.validLogin, userController.userLogin)
 router.get("/user/:userId/profile", authenti.authentication, userController.getuserById);
 router.put('/user/:userId/profile', authenti.authentication, userController.updateProfile);
@@ -17,15 +17,15 @@ router.put('/user/:userId/profile', authenti.authentication, userController.upda
 // product api
 router.post('/products', valid.validproduct, productController.createproducts)
 router.get("/products", productController.getProductBYQuery)
-router.get("/productId/:productId", productController.getProductById);
+router.get("/products/:productId", productController.getProductById);
 router.put("/products/:productId", valid.updateProduct, productController.updateProduct)
 router.delete('/products/:productId', productController.deleteProduct);
 
 // feature 3
-router.post('/cart/:userId', authenti.authentication, cartController.cartcreate)
+router.post('/users/:userId/cart', authenti.authentication, cartController.cartcreate)
 router.get("/users/:userId/cart", authenti.authentication, cartController.getCart);
 router.put("/users/:userId/cart", authenti.authentication, cartController.updateCart)
-router.delete('/cart/:userId', authenti.authentication, cartController.deleteCart);
+router.delete('/users/:userId/cart', authenti.authentication, cartController.deleteCart);
 
 //feture 4
 router.post('/users/:userId/orders', authenti.authentication, valid.creatOrder, orderController.creatOrder)
